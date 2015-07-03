@@ -41,9 +41,8 @@ setWindowPosition
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-    @IBOutlet weak var window: NSWindow!
-
+    
+    var clojureScript : ClojureScript?
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
@@ -70,18 +69,51 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         let context = JSContext()
-        context.evaluateScript("var num = 5 + 5")
-        context.evaluateScript("var names = ['Grace', 'Ada', 'Margaret']")
-        context.evaluateScript("var triple = function(value) { return value * 3 }")
-        let tripleNum: JSValue = context.evaluateScript("triple(num)")
         
-        println(tripleNum)
+//        [[NSBundle mainBundle] pathForResource:@"out/main" ofType:@"js"]]
+        
+        clojureScript = ClojureScript(ns:"marina.core", fn:"init!",
+            context:context,
+            jsPath:NSBundle.mainBundle().pathForResource("out/main", ofType: "js"))
+        clojureScript!.bootstrap()
+                
+//        context.evaluateScript("var num = 5 + 5")
+//        context.evaluateScript("var names = ['Grace', 'Ada', 'Margaret']")
+//        context.evaluateScript("var triple = function(value) { return value * 3 }")
+//        let tripleNum: JSValue = context.evaluateScript("triple(num)")
+//        
+//        println(tripleNum)
         // Insert code here to initialize your application
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
     }
+    
+    private func setUpExceptionLogging(context: JSContext) {
+        context.exceptionHandler = { (context:JSContext!, exception: JSValue!) -> Void in
+            let sourceURL = exception.objectForKeyedSubscript("sourceURL"),
+            line = exception.objectForKeyedSubscript("line"),
+            column = exception.objectForKeyedSubscript("column"),
+            stack = exception.objectForKeyedSubscript("stack")
+            
+            println("[\(sourceURL):\(line):\(column)] \(exception)\n\(stack)")
+        }
+    }
+    
+    private func setUpConsoleLog(context: JSContext) {
+        context.evaluateScript("var console = {}")
+        
+        let log: @objc_block String -> Void = { (message: String) -> Void in
+            println("JS: \(message)")
+        }
+        
+        context.objectForKeyedSubscript("console").setObject(
+            unsafeBitCast(log, AnyObject.self),
+            forKeyedSubscript: "log")
+        
+    }
+    
 
 
 }

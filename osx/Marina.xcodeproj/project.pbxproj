@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		91779CAF1B4644FA00208F64 /* ClojureScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91779CAE1B4644FA00208F64 /* ClojureScript.swift */; };
+		91779CB11B46487800208F64 /* out in Resources */ = {isa = PBXBuildFile; fileRef = 91779CB01B46487800208F64 /* out */; };
 		91F5609B1B435FB6003828FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F5609A1B435FB6003828FA /* AppDelegate.swift */; };
 		91F5609D1B435FB6003828FA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91F5609C1B435FB6003828FA /* Images.xcassets */; };
 		91F560A01B435FB6003828FA /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91F5609E1B435FB6003828FA /* MainMenu.xib */; };
@@ -24,6 +26,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		91779CAE1B4644FA00208F64 /* ClojureScript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClojureScript.swift; sourceTree = "<group>"; };
+		91779CB01B46487800208F64 /* out */ = {isa = PBXFileReference; lastKnownFileType = folder; path = out; sourceTree = "<group>"; };
 		91F560951B435FB6003828FA /* Marina.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Marina.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91F560991B435FB6003828FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91F5609A1B435FB6003828FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -55,6 +59,7 @@
 		91F5608C1B435FB6003828FA = {
 			isa = PBXGroup;
 			children = (
+				91779CB01B46487800208F64 /* out */,
 				91F560971B435FB6003828FA /* Marina */,
 				91F560A81B435FB6003828FA /* MarinaTests */,
 				91F560961B435FB6003828FA /* Products */,
@@ -73,6 +78,7 @@
 		91F560971B435FB6003828FA /* Marina */ = {
 			isa = PBXGroup;
 			children = (
+				91779CAE1B4644FA00208F64 /* ClojureScript.swift */,
 				91F5609A1B435FB6003828FA /* AppDelegate.swift */,
 				91F5609C1B435FB6003828FA /* Images.xcassets */,
 				91F5609E1B435FB6003828FA /* MainMenu.xib */,
@@ -186,6 +192,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91779CB11B46487800208F64 /* out in Resources */,
 				91F5609D1B435FB6003828FA /* Images.xcassets in Resources */,
 				91F560A01B435FB6003828FA /* MainMenu.xib in Resources */,
 			);
@@ -206,6 +213,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F5609B1B435FB6003828FA /* AppDelegate.swift in Sources */,
+				91779CAF1B4644FA00208F64 /* ClojureScript.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +404,7 @@
 				91F560B11B435FB6003828FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		91F560B21B435FB6003828FA /* Build configuration list for PBXNativeTarget "MarinaTests" */ = {
 			isa = XCConfigurationList;
@@ -404,6 +413,7 @@
 				91F560B41B435FB6003828FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
