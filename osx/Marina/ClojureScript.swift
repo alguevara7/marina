@@ -22,33 +22,14 @@ class ClojureScript {
         self.jsPath = jsPath
     }
     
-    func bootstrap(googPath: String!) {
+    func bootstrap() {
         self.setUpExceptionLogging(context)
         self.setUpConsoleLog(context)
         
-//        goog/base.js
-        if let googString = String(contentsOfFile:googPath, encoding:NSUTF8StringEncoding, error:nil) {
-            context.evaluateScript(googString, withSourceURL: NSURL(fileURLWithPath: googPath))
-        }
+        context.evaluateScript("console.log('HI!!!!')")
         
         if let jsString = String(contentsOfFile:jsPath, encoding:NSUTF8StringEncoding, error:nil) {
             context.evaluateScript(jsString, withSourceURL: NSURL(fileURLWithPath: jsPath))
-            
-            var listener1 : JSValue?
-            
-            self.bind("subscribe", fn:{ (listener:JSValue) -> Void in
-                listener1 = listener
-            })
-            
-            context.evaluateScript("CLOSURE_IMPORT_SCRIPT = function(src) { AMBLY_IMPORT_SCRIPT('goog/' + src); return true; }")
-            
-            context.evaluateScript("goog.isProvided_ = function(x) { return false; };")
-            
-            context.evaluateScript("goog.require = function (name) { return CLOSURE_IMPORT_SCRIPT(goog.dependencies_.nameToPath[name]); };")
-            
-            context.evaluateScript("goog.require('cljs.core');")
-            
-            context.evaluateScript("goog.require('marina.core');")
             
 //            JSValue* initFn = [self getValue:initFnName inNamespace:namespace];
 //            
@@ -66,10 +47,8 @@ class ClojureScript {
             if initFn.isUndefined() {
                 println("NOOOOO!!!")
             }
-                        
-            initFn.callWithArguments([["key":"value"]])
             
-            listener1?.callWithArguments([["type":"window-open"]])
+            initFn.callWithArguments([["key":"value"]])
             
         }
     }
@@ -102,14 +81,8 @@ class ClojureScript {
         context.objectForKeyedSubscript("console").setObject(
             unsafeBitCast(log, AnyObject.self),
             forKeyedSubscript: "log")
+        
     }
     
-    func bind(keyedSubscript: String, fn: JSValue -> Void) {
-        let objcBlock: @objc_block JSValue -> Void = fn
-        
-        context.setObject(
-            unsafeBitCast(objcBlock, AnyObject.self),
-            forKeyedSubscript: keyedSubscript)
-    }
     
 }

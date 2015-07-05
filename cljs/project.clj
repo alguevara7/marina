@@ -1,9 +1,8 @@
 (defproject shrimp "0.1.0-SNAPSHOT"
-  :description "Demo project for Goby."
+  :description "Clojurescript code of Marina"
   :dependencies [[org.clojure/clojure "1.7.0-RC1"]
                  [org.clojure/clojurescript "0.0-3308"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [org.omcljs/ambly "0.6.0"]]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
   :plugins [[lein-cljsbuild "1.0.6"]]
   :source-paths ["src"]
   :clean-targets ["target" "out"]
