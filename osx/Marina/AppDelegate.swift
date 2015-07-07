@@ -89,32 +89,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
     }
-    
-    private func setUpExceptionLogging(context: JSContext) {
-        context.exceptionHandler = { (context:JSContext!, exception: JSValue!) -> Void in
-            let sourceURL = exception.objectForKeyedSubscript("sourceURL"),
-            line = exception.objectForKeyedSubscript("line"),
-            column = exception.objectForKeyedSubscript("column"),
-            stack = exception.objectForKeyedSubscript("stack")
-            
-            println("[\(sourceURL):\(line):\(column)] \(exception)\n\(stack)")
-        }
-    }
-    
-    private func setUpConsoleLog(context: JSContext) {
-        context.evaluateScript("var console = {}")
-        
-        let log: @objc_block String -> Void = { (message: String) -> Void in
-            println("JS: \(message)")
-        }
-        
-        context.objectForKeyedSubscript("console").setObject(
-            unsafeBitCast(log, AnyObject.self),
-            forKeyedSubscript: "log")
-        
-    }
-    
-
 
 }
 

@@ -8,11 +8,12 @@
 (defn ^:export init!
   [js-env]
 
+  (enable-console-print!)
+
   (reset! env (map-keys keyword (cljs.core/js->clj js-env)))
 
   (marina/subscribe :window-open #(println %))
 
-  (enable-console-print!)
   (println "ClojureScript initialized: " @env)
 
   (when (:debug-build @env)

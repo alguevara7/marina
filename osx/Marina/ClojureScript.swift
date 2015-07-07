@@ -26,39 +26,37 @@ class ClojureScript {
         self.setUpExceptionLogging(context)
         self.setUpConsoleLog(context)
         
-        context.evaluateScript("console.log('HI!!!!')")
+        setUpClosureImportScript(context)
         
-        if let jsString = String(contentsOfFile:jsPath, encoding:NSUTF8StringEncoding, error:nil) {
-            context.evaluateScript(jsString, withSourceURL: NSURL(fileURLWithPath: jsPath))
-            
-//            JSValue* initFn = [self getValue:initFnName inNamespace:namespace];
-//            
-//            [initFn callWithArguments:@[@{@"debug-build": @(debugBuild),
-//            @"target-simulator": @(targetSimulator),
-//            @"user-interface-idiom": (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad": @"iPhone")}]];
-            
-            let initFn : JSValue = context
-                .objectForKeyedSubscript("marina")
-                .objectForKeyedSubscript("core")
-                .objectForKeyedSubscript("init_BANG_")
-                
-//                .objectForKeyedSubscript("core").objectForKeyedSubscript("init!")
-            
-            if initFn.isUndefined() {
-                println("NOOOOO!!!")
-            }
-            
-            initFn.callWithArguments([["key":"value"]])
-            
+        setUpNativeBridge(context)
+
+        let basePath = NSBundle.mainBundle().pathForResource("out/goog/base", ofType: "js")!
+        context.evaluateScript(
+            String(contentsOfFile:basePath, encoding:NSUTF8StringEncoding, error:nil),
+            withSourceURL: NSURL(fileURLWithPath: basePath))
+        
+        context.evaluateScript(
+            String(contentsOfFile:jsPath, encoding:NSUTF8StringEncoding, error:nil),
+            withSourceURL: NSURL(fileURLWithPath: jsPath))
+
+        let marinaPath = NSBundle.mainBundle().pathForResource("out/marina/core", ofType: "js")!
+        context.evaluateScript(
+            String(contentsOfFile:marinaPath, encoding:NSUTF8StringEncoding, error:nil),
+            withSourceURL: NSURL(fileURLWithPath: marinaPath))
+        
+        
+        let initFn : JSValue = context
+            .objectForKeyedSubscript("marina")
+            .objectForKeyedSubscript("core")
+            .objectForKeyedSubscript("init_BANG_")
+        
+        if initFn.isUndefined() {
+            println("NOOOOO!!!")
         }
+        
+        initFn.callWithArguments([["key":"value"]])
+        
     }
-    
-//    + (NSString*)munge:(NSString*)s
-//    {
-//    return [[[s stringByReplacingOccurrencesOfString:@"-" withString:@"_"]
-//    stringByReplacingOccurrencesOfString:@"!" withString:@"_BANG_"]
-//    stringByReplacingOccurrencesOfString:@"?" withString:@"_QMARK_"];
-//    }
     
     private func setUpExceptionLogging(context: JSContext) {
         context.exceptionHandler = { (context:JSContext!, exception: JSValue!) -> Void in
@@ -83,6 +81,46 @@ class ClojureScript {
             forKeyedSubscript: "log")
         
     }
+    
+    private func setUpClosureImportScript(context: JSContext) {
+        let importScript: @objc_block String -> Bool = { (path: String) -> Bool in
+            println("Loading: \(path)");
+            
+            let nativePath = NSBundle.mainBundle().pathForResource("out/goog/" + path, ofType: nil)!
+            context.evaluateScript(
+                String(contentsOfFile:nativePath, encoding:NSUTF8StringEncoding, error:nil),
+                withSourceURL: NSURL(fileURLWithPath: nativePath))
+            
+            return true
+        }
+        
+        context.setObject(
+            unsafeBitCast(importScript, AnyObject.self),
+            forKeyedSubscript: "CLOSURE_IMPORT_SCRIPT")
+        
+    }
+    
+
+    private func setUpNativeBridge(context: JSContext) {
+        context.evaluateScript("var marina = {}")
+        
+        let subscribe: @objc_block (AnyObject, JSValue) -> Void = { (eventType: AnyObject, fn: JSValue) -> Void in
+            println("SUBSCRIBE")
+            fn.callWithArguments(["Hola muchachos :)"])
+        }
+        
+        context.objectForKeyedSubscript("marina").setObject(
+            unsafeBitCast(subscribe, AnyObject.self),
+            forKeyedSubscript: "subscribe")
+    }
+    
+    
+    //    + (NSString*)munge:(NSString*)s
+    //    {
+    //    return [[[s stringByReplacingOccurrencesOfString:@"-" withString:@"_"]
+    //    stringByReplacingOccurrencesOfString:@"!" withString:@"_BANG_"]
+    //    stringByReplacingOccurrencesOfString:@"?" withString:@"_QMARK_"];
+    //    }
     
     
 }

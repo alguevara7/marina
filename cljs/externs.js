@@ -1,2 +1,2 @@
 var Marina = {};
-Marina.subscribe = function(handler) {};
+Marina.subscribe = function() {};

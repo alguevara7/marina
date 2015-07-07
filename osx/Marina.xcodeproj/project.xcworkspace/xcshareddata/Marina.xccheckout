@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>31FDD410-1288-4177-BF37-BABF47C8F594</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Marina</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>03EC384199EA21CFDAA97DCF6BFC0600CDB5AE57</key>
 		<string>github.com:zb0th/marina.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>osx/Marina.xcodeproj/project.xcworkspace</string>
+	<string>osx/Marina.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>03EC384199EA21CFDAA97DCF6BFC0600CDB5AE57</key>
