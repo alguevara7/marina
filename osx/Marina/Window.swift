@@ -46,15 +46,15 @@ import Cocoa
     
 }
 
-@objc class Point : NSObject, JSExport, Printable {
+@objc protocol PointJSExport : JSExport {
+    var x: NSNumber { get }
+    var y: NSNumber { get }
+    var description: String { get }
+}
+
+@objc class Point : NSObject, PointJSExport, Printable {
     dynamic var x: NSNumber
     dynamic var y: NSNumber
-    
-    override var description: String {
-        get {
-            return "x:\(x), y:\(y)"
-        }
-    }
     
     init(_ x: NSNumber, _ y: NSNumber) {
         self.x = x
@@ -68,17 +68,24 @@ import Cocoa
             return nil
         }
     }
-}
-
-@objc class Size : NSObject, JSExport, Printable {
-    dynamic var width: NSNumber
-    dynamic var height: NSNumber
     
     override var description: String {
         get {
-            return "width:\(width), height:\(height)"
+            return "x:\(x), y:\(y)"
         }
     }
+    
+}
+
+@objc protocol SizeJSExport : JSExport {
+    var width: NSNumber { get }
+    var height: NSNumber { get }
+    var description: String { get }
+}
+
+@objc class Size : NSObject, SizeJSExport, Printable {
+    dynamic var width: NSNumber
+    dynamic var height: NSNumber
     
     init(_ width: NSNumber, _ height: NSNumber) {
         self.width = width
@@ -92,4 +99,11 @@ import Cocoa
             return nil
         }
     }
+    
+    override var description: String {
+        get {
+            return "width:\(width), height:\(height)"
+        }
+    }
+    
 }

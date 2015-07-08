@@ -17,7 +17,9 @@
   (doseq [app (js/Application.allRunning)]
     (println "APP - " (.-title app))
     (doseq [window (.-windows app)]
-      (println "\tWINDOW - " (.-title window))))
+      (println "\tWINDOW - " (.-title window))
+      (println "\t\tPOS - " (aget window "position" "description"))
+      (println "\t\tSIZE - " (aget window "size" "description"))))
 
   (println "ClojureScript initialized: " @env)
 
