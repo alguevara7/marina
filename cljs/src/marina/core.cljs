@@ -12,7 +12,12 @@
 
   (reset! env (map-keys keyword (cljs.core/js->clj js-env)))
 
-  (marina/subscribe :window-open #(println %))
+  ;;(marina/subscribe :window-open #(println %))
+
+  (doseq [app (js/Application.allRunning)]
+    (println "APP - " (.-title app))
+    (doseq [window (.-windows app)]
+      (println "\tWINDOW - " (.-title window))))
 
   (println "ClojureScript initialized: " @env)
 

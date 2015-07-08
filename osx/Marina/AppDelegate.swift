@@ -43,12 +43,31 @@ setWindowPosition
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     var clojureScript : ClojureScript?
+    
+    func title(element: AXUIElement!) -> String? {
+        return element.getAttribute(NSAccessibilityTitleAttribute)
+    }
+    
+    class func allApps() -> [NSRunningApplication] {
+        return (NSWorkspace.sharedWorkspace().runningApplications as! [NSRunningApplication])
+    }
+    
 
+    func allWindows(element: AXUIElement?) -> [AXUIElement]? {
+        return (element?.getAttributes("AXWindows") as [AXUIElement]?)
+    }
+
+    func mainWindow(element: AXUIElement?) -> AXUIElement? {
+        return element?.getAttribute("AXMainWindow")
+    }
+    
+    
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
         let dict: CFDictionary = [promptFlag: true]
         AXIsProcessTrustedWithOptions(dict)
         
+        NSWorkspace.sharedWorkspace().runningApplications
         
         NSWorkspace.sharedWorkspace().notificationCenter.addObserverForName(
             NSWorkspaceDidLaunchApplicationNotification, object: nil, queue: nil) { (aNotification:NSNotification!) -> Void in
@@ -59,13 +78,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //                NSLog("app = %u", pid)
                 //NSRunningApplication
                 
-                let app: Unmanaged<AXUIElementRef>! = AXUIElementCreateApplication(pid)
-                print(app.takeRetainedValue())
-                
                 //AXIsTrustedProcess
                 
-                
-                return
+                let app: Unmanaged<AXUIElementRef>! = AXUIElementCreateApplication(pid)
+                let appAXUIElement = app.takeRetainedValue()
+                print(self.title(appAXUIElement))
         }
         
         let context = JSContext()
@@ -76,7 +93,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             context:context,
             jsPath:NSBundle.mainBundle().pathForResource("out/main", ofType: "js"))
         clojureScript!.bootstrap()
-                
+        
+        
+//        for app in Application.allRunning() {
+//            if let windows = app.windows {
+//                for window in windows {
+//                    println("\(window.title) -> \(window.position) - \(window.size)")
+//                }
+//                
+//            }
+//        }
+        
 //        context.evaluateScript("var num = 5 + 5")
 //        context.evaluateScript("var names = ['Grace', 'Ada', 'Margaret']")
 //        context.evaluateScript("var triple = function(value) { return value * 3 }")

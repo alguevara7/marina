@@ -38,12 +38,10 @@ class ClojureScript {
         context.evaluateScript(
             String(contentsOfFile:jsPath, encoding:NSUTF8StringEncoding, error:nil),
             withSourceURL: NSURL(fileURLWithPath: jsPath))
-
-        let marinaPath = NSBundle.mainBundle().pathForResource("out/marina/core", ofType: "js")!
-        context.evaluateScript(
-            String(contentsOfFile:marinaPath, encoding:NSUTF8StringEncoding, error:nil),
-            withSourceURL: NSURL(fileURLWithPath: marinaPath))
         
+        context.setObject(Application.self, forKeyedSubscript: "Application")
+
+        context.evaluateScript("goog.require('\(ns)');")
         
         let initFn : JSValue = context
             .objectForKeyedSubscript("marina")
@@ -52,7 +50,10 @@ class ClojureScript {
         
         if initFn.isUndefined() {
             println("NOOOOO!!!")
+            exit(1)
         }
+        
+        //[{:app-title "foo" :windows []}]
         
         initFn.callWithArguments([["key":"value"]])
         
@@ -104,8 +105,10 @@ class ClojureScript {
     private func setUpNativeBridge(context: JSContext) {
         context.evaluateScript("var marina = {}")
         
-        let subscribe: @objc_block (AnyObject, JSValue) -> Void = { (eventType: AnyObject, fn: JSValue) -> Void in
+        let subscribe: @objc_block (JSValue, JSValue) -> Void = { (eventType: JSValue, fn: JSValue) -> Void in
             println("SUBSCRIBE")
+            println(eventType.objectForKeyedSubscript("name"))
+            
             fn.callWithArguments(["Hola muchachos :)"])
         }
         
