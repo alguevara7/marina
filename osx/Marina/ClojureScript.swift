@@ -40,6 +40,8 @@ class ClojureScript {
             withSourceURL: NSURL(fileURLWithPath: jsPath))
         
         context.setObject(Application.self, forKeyedSubscript: "Application")
+        context.setObject(Point.self, forKeyedSubscript: "Point")
+        context.setObject(Size.self, forKeyedSubscript: "Size")
 
         context.evaluateScript("goog.require('\(ns)');")
         

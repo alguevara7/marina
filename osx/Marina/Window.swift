@@ -13,8 +13,8 @@ import Cocoa
 
 @objc protocol WindowJSExport : JSExport {
     var title: String? { get }
-    var position: Point? { get }
-    var size: Size? { get }
+    var position: PointJSExport? { get set }
+    var size: SizeJSExport? { get set }
 }
 
 @objc class Window : NSObject, WindowJSExport {
@@ -30,18 +30,33 @@ import Cocoa
         }
     }
 
-    var position: Point? {
+    var position: PointJSExport? {
         get {
             let _point = (element.getAttribute(NSAccessibilityPositionAttribute) as AXValue?)?.convertToStruct() as NSPoint?
             return Point.createFromNSPoint(_point)
         }
+        set(newPosition) {
+            if let p = newPosition {
+                let x: CGFloat = CGFloat(p.x.floatValue)
+                let y: CGFloat = CGFloat(p.y.floatValue)
+                element.setAttribute(NSAccessibilityPositionAttribute, value: AXValue.fromPoint(NSPoint(x:x, y:y)))
+            }
+        }
     }
     
-    var size: Size? {
+    var size: SizeJSExport? {
         get {
             let _size = (element.getAttribute(NSAccessibilitySizeAttribute) as AXValue?)?.convertToStruct() as NSSize?
             return Size.createFromNSSize(_size)
         }
+        set(newSize) {
+            if let s = newSize {
+                let width: CGFloat = CGFloat(s.width.floatValue)
+                let height: CGFloat = CGFloat(s.height.floatValue)
+                element.setAttribute(NSAccessibilitySizeAttribute, value: AXValue.fromSize(NSSize(width:width, height:height)))
+            }
+        }
+
     }
     
 }
@@ -50,6 +65,8 @@ import Cocoa
     var x: NSNumber { get }
     var y: NSNumber { get }
     var description: String { get }
+    
+    static func createFromXY(x: NSNumber, _ y: NSNumber) -> Point
 }
 
 @objc class Point : NSObject, PointJSExport, Printable {
@@ -59,6 +76,10 @@ import Cocoa
     init(_ x: NSNumber, _ y: NSNumber) {
         self.x = x
         self.y = y
+    }
+    
+    class func createFromXY(x: NSNumber, _ y: NSNumber) -> Point {
+        return Point(x, y)
     }
     
     class func createFromNSPoint(point: NSPoint?) -> Point? {
@@ -81,6 +102,8 @@ import Cocoa
     var width: NSNumber { get }
     var height: NSNumber { get }
     var description: String { get }
+    
+    static func createFromWidthHeight(width: NSNumber, _ height: NSNumber) -> Size
 }
 
 @objc class Size : NSObject, SizeJSExport, Printable {
@@ -98,6 +121,10 @@ import Cocoa
         } else {
             return nil
         }
+    }
+    
+    class func createFromWidthHeight(width: NSNumber, _ height: NSNumber) -> Size {
+        return Size(width, height)
     }
     
     override var description: String {

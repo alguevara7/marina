@@ -17,9 +17,17 @@
   (doseq [app (js/Application.allRunning)]
     (println "APP - " (.-title app))
     (doseq [window (.-windows app)]
-      (println "\tWINDOW - " (.-title window))
-      (println "\t\tPOS - " (aget window "position" "description"))
-      (println "\t\tSIZE - " (aget window "size" "description"))))
+      (println "\tWINDOW - >>>" (.-title window) "<<<")
+      (println "\t\tPOS - " (.. window -position -description))
+      (println "\t\tSIZE - " (.. window -size -description))
+      (when (re-find #".*cljs.*" (str (.-title window)))
+        (set! (.-position window) (js/Point.createFromXY 1 1))
+        (set! (.-size window) (js/Size.createFromWidthHeight 1000 1000))
+        )))
+
+  (println js/Point)
+  (println js/Point.createFromXY)
+
 
   (println "ClojureScript initialized: " @env)
 
