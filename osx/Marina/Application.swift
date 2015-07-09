@@ -10,12 +10,15 @@ import Foundation
 import JavaScriptCore
 import Cocoa
 
+internal let systemWideElement = AXUIElementCreateSystemWide()!.takeRetainedValue()
 
 @objc protocol ApplicationJSExport : JSExport {
-    var title: String? { get }
+    var title: String { get }
     var windows: [Window]? { get }
+    var focusedWindow: Window? { get }
     
     static func allRunning() -> [Application]
+    static func focused() -> Application?
 }
 
 @objc class Application : NSObject, ApplicationJSExport {
@@ -29,22 +32,32 @@ import Cocoa
         return (NSWorkspace.sharedWorkspace().runningApplications as! [NSRunningApplication]).map(toApplication)
     }
 
-    internal class func toApplication(app: NSRunningApplication) -> Application {
+    class func focused() -> Application? {
+        return Application(systemWideElement.getAttribute("AXFocusedApplication"))
+    }
+    
+    private class func toApplication(app: NSRunningApplication) -> Application {
         let pid = app.processIdentifier
         let elementRef: Unmanaged<AXUIElementRef>! = AXUIElementCreateApplication(pid)
         let element = elementRef.takeRetainedValue()
         return Application(element)
     }
 
-    var title: String? {
+    var title: String {
         get {
-           return element.getAttribute(NSAccessibilityTitleAttribute) as String?
+           return (element.getAttribute(NSAccessibilityTitleAttribute) as String?) ?? ""
         }
     }
     
     var windows: [Window]? {
         get {
-            return (element.getAttributes("AXWindows") as [AXUIElement]?)?.map{ Window($0) }
+            return (element.getAttributes(NSAccessibilityWindowsAttribute) as [AXUIElement]?)?.map{ Window($0) }
+        }
+    }
+    
+    var focusedWindow: Window? {
+        get {
+            return Window(element.getAttribute(NSAccessibilityFocusedWindowAttribute))
         }
     }
     

@@ -18,16 +18,16 @@
     (println "APP - " (.-title app))
     (doseq [window (.-windows app)]
       (println "\tWINDOW - >>>" (.-title window) "<<<")
+      (println "\t\tROLE - " (.. window -role))
       (println "\t\tPOS - " (.. window -position -description))
       (println "\t\tSIZE - " (.. window -size -description))
-      (when (re-find #".*cljs.*" (str (.-title window)))
+      (when (re-find #".*cljs.*" (.-title window))
         (set! (.-position window) (js/Point.createFromXY 1 1))
         (set! (.-size window) (js/Size.createFromWidthHeight 1000 1000))
         )))
 
-  (println js/Point)
-  (println js/Point.createFromXY)
-
+  (println "Focused Application" (.. (js/Application.focused) -title))
+  (println "Focused Window" (.. (js/Application.focused) -focusedWindow -title))
 
   (println "ClojureScript initialized: " @env)
 

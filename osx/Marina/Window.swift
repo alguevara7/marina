@@ -12,7 +12,8 @@ import Cocoa
 
 
 @objc protocol WindowJSExport : JSExport {
-    var title: String? { get }
+    var title: String { get }
+    var role: String { get }
     var position: PointJSExport? { get set }
     var size: SizeJSExport? { get set }
 }
@@ -24,12 +25,24 @@ import Cocoa
         self.element = element
     }
     
-    var title: String? {
+    var title: String {
         get {
-            return element.getAttribute(NSAccessibilityTitleAttribute) as String?
+            return (element.getAttribute(NSAccessibilityTitleAttribute) as String?) ?? ""
         }
     }
 
+    var role: String {
+        get {
+            return (element.getAttribute(NSAccessibilityRoleAttribute) as String?) ?? ""
+        }
+    }
+
+    var subrole: String {
+        get {
+            return (element.getAttribute(NSAccessibilitySubroleAttribute) as String?) ?? ""
+        }
+    }
+    
     var position: PointJSExport? {
         get {
             let _point = (element.getAttribute(NSAccessibilityPositionAttribute) as AXValue?)?.convertToStruct() as NSPoint?
