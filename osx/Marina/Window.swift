@@ -19,54 +19,54 @@ import Cocoa
 }
 
 @objc class Window : NSObject, WindowJSExport {
-    dynamic var element: AXUIElement!
+    dynamic var element: AXUIElement?
     
-    init(_ element: AXUIElement!) {
+    init(_ element: AXUIElement?) {
         self.element = element
     }
     
     var title: String {
         get {
-            return (element.getAttribute(NSAccessibilityTitleAttribute) as String?) ?? ""
+            return (element?.getAttribute(NSAccessibilityTitleAttribute) as String?) ?? ""
         }
     }
 
     var role: String {
         get {
-            return (element.getAttribute(NSAccessibilityRoleAttribute) as String?) ?? ""
+            return (element?.getAttribute(NSAccessibilityRoleAttribute) as String?) ?? ""
         }
     }
 
     var subrole: String {
         get {
-            return (element.getAttribute(NSAccessibilitySubroleAttribute) as String?) ?? ""
+            return (element?.getAttribute(NSAccessibilitySubroleAttribute) as String?) ?? ""
         }
     }
     
     var position: PointJSExport? {
         get {
-            let _point = (element.getAttribute(NSAccessibilityPositionAttribute) as AXValue?)?.convertToStruct() as NSPoint?
+            let _point = (element?.getAttribute(NSAccessibilityPositionAttribute) as AXValue?)?.convertToStruct() as NSPoint?
             return Point.createFromNSPoint(_point)
         }
         set(newPosition) {
             if let p = newPosition {
                 let x: CGFloat = CGFloat(p.x.floatValue)
                 let y: CGFloat = CGFloat(p.y.floatValue)
-                element.setAttribute(NSAccessibilityPositionAttribute, value: AXValue.fromPoint(NSPoint(x:x, y:y)))
+                element?.setAttribute(NSAccessibilityPositionAttribute, value: AXValue.fromPoint(NSPoint(x:x, y:y)))
             }
         }
     }
     
     var size: SizeJSExport? {
         get {
-            let _size = (element.getAttribute(NSAccessibilitySizeAttribute) as AXValue?)?.convertToStruct() as NSSize?
+            let _size = (element?.getAttribute(NSAccessibilitySizeAttribute) as AXValue?)?.convertToStruct() as NSSize?
             return Size.createFromNSSize(_size)
         }
         set(newSize) {
             if let s = newSize {
                 let width: CGFloat = CGFloat(s.width.floatValue)
                 let height: CGFloat = CGFloat(s.height.floatValue)
-                element.setAttribute(NSAccessibilitySizeAttribute, value: AXValue.fromSize(NSSize(width:width, height:height)))
+                element?.setAttribute(NSAccessibilitySizeAttribute, value: AXValue.fromSize(NSSize(width:width, height:height)))
             }
         }
 

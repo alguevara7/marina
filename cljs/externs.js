@@ -4,6 +4,7 @@ Marina.subscribe = function() {};
 var Application = {};
 Application.allRunning = function() {};
 Application.focused = function() {};
+Application.on = function() {};
 
 var Window = {};
 Window.title = function() {};

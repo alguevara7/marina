@@ -29,6 +29,9 @@
   (println "Focused Application" (.. (js/Application.focused) -title))
   (println "Focused Window" (.. (js/Application.focused) -focusedWindow -title))
 
+  (js/Application.on :focused (fn [event app]
+                                (println "App: " event " " (.. app -title) " Focused window: " (.. app -focusedWindow -title))))
+
   (println "ClojureScript initialized: " @env)
 
   (when (:debug-build @env)

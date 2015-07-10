@@ -67,23 +67,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let dict: CFDictionary = [promptFlag: true]
         AXIsProcessTrustedWithOptions(dict)
         
-        NSWorkspace.sharedWorkspace().runningApplications
-        
-        NSWorkspace.sharedWorkspace().notificationCenter.addObserverForName(
-            NSWorkspaceDidLaunchApplicationNotification, object: nil, queue: nil) { (aNotification:NSNotification!) -> Void in
-                
-                
-                let runningApp: NSRunningApplication?  = aNotification.userInfo![NSWorkspaceApplicationKey] as? NSRunningApplication
-                let pid: pid_t = runningApp!.processIdentifier
-//                NSLog("app = %u", pid)
-                //NSRunningApplication
-                
-                //AXIsTrustedProcess
-                
-                let app: Unmanaged<AXUIElementRef>! = AXUIElementCreateApplication(pid)
-                let appAXUIElement = app.takeRetainedValue()
-                print(self.title(appAXUIElement))
-        }
+//        NSWorkspace.sharedWorkspace().notificationCenter.addObserverForName(
+//            NSWorkspaceDidLaunchApplicationNotification, object: nil, queue: nil) { (aNotification:NSNotification!) -> Void in
+//                
+//                
+//                let runningApp: NSRunningApplication?  = aNotification.userInfo![NSWorkspaceApplicationKey] as? NSRunningApplication
+//                let pid: pid_t = runningApp!.processIdentifier
+////                NSLog("app = %u", pid)
+//                //NSRunningApplication
+//                
+//                //AXIsTrustedProcess
+//                
+//                let app: Unmanaged<AXUIElementRef>! = AXUIElementCreateApplication(pid)
+//                let appAXUIElement = app.takeRetainedValue()
+//                print(self.title(appAXUIElement))
+//        }
         
         let context = JSContext()
         
