@@ -1,1 +1,4 @@
 - what's the story with the use [weak self] in the siwft code ?
+- need unique identifier for windows
+- use CGDisplayRegisterReconfigurationCallback  to know when display changes
+- use NSScreen.screens()  and NSScreen.visibleFrame

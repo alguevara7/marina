@@ -14,11 +14,17 @@ import Cocoa
 @objc protocol WindowJSExport : JSExport {
     var title: String { get }
     var role: String { get }
+    var roleDescription: String { get }
+    var subrole: String { get }
     var position: PointJSExport? { get set }
     var size: SizeJSExport? { get set }
 }
 
-@objc class Window : NSObject, WindowJSExport {
+func ==(lhs: Window, rhs: Window) -> Bool {
+    return CFEqual(lhs.element, rhs.element) != 0 //test this
+}
+
+@objc class Window : NSObject, WindowJSExport, Equatable {
     dynamic var element: AXUIElement?
     
     init(_ element: AXUIElement?) {
@@ -37,6 +43,12 @@ import Cocoa
         }
     }
 
+    var roleDescription: String {
+        get {
+            return (element?.getAttribute(NSAccessibilityRoleDescriptionAttribute) as String?) ?? ""
+        }
+    }
+    
     var subrole: String {
         get {
             return (element?.getAttribute(NSAccessibilitySubroleAttribute) as String?) ?? ""
@@ -66,7 +78,10 @@ import Cocoa
             if let s = newSize {
                 let width: CGFloat = CGFloat(s.width.floatValue)
                 let height: CGFloat = CGFloat(s.height.floatValue)
-                element?.setAttribute(NSAccessibilitySizeAttribute, value: AXValue.fromSize(NSSize(width:width, height:height)))
+                let success = element?.setAttribute(NSAccessibilitySizeAttribute, value: AXValue.fromSize(NSSize(width:width, height:height)))
+                if (success==false) {
+                    println("BOOOOOO")
+                }
             }
         }
 

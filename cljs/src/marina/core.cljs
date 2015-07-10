@@ -12,25 +12,33 @@
 
   (reset! env (map-keys keyword (cljs.core/js->clj js-env)))
 
-  ;;(marina/subscribe :window-open #(println %))
-
   (doseq [app (js/Application.allRunning)]
-    (println "APP - " (.-title app))
+    ;;     (println "APP - " (.-title app))
+    (when (re-find #".*Terminal.*" (.-title app))
+      (.on app :created (fn [event-type window] (println ">>> " event-type " -- "(.. window -roleDescription))))
+      (.on app :focused (fn [event-type window] (println ">>> " event-type " -- "(.. window -roleDescription))))
+      (.on app :destroyed (fn [event-type window] (println ">>> " event-type)))
+      (.on app :resized (fn [event-type window] (println ">>> " event-type)))
+      (.on app :moved (fn [event-type window] (println ">>> " event-type)))
+      (.on app :main-window-changed (fn [event-type window] (println ">>> " event-type)))
+    )
+
     (doseq [window (.-windows app)]
-      (println "\tWINDOW - >>>" (.-title window) "<<<")
-      (println "\t\tROLE - " (.. window -role))
-      (println "\t\tPOS - " (.. window -position -description))
-      (println "\t\tSIZE - " (.. window -size -description))
+      (println "\t\tROLE - " (.. window -role) "/" (.-subrole window))
+;;       (println "\t\tPOS - " (.. window -position -description))
+;;       (println "\t\tSIZE - " (.. window -size -description))
       (when (re-find #".*cljs.*" (.-title window))
-        (set! (.-position window) (js/Point.createFromXY 1 1))
-        (set! (.-size window) (js/Size.createFromWidthHeight 1000 1000))
+;;         (println (.. window -title))
+;;         (set! (.-position window) (js/Point.createFromXY 1 1))
+;;         (set! (.-size window) (js/Size.createFromWidthHeight 1000 1000))
         )))
 
-  (println "Focused Application" (.. (js/Application.focused) -title))
-  (println "Focused Window" (.. (js/Application.focused) -focusedWindow -title))
+;;   (println "Focused Application" (.. (js/Application.focused) -title))
+;;   (println "Focused Window" (.. (js/Application.focused) -focusedWindow -title))
 
-  (js/Application.on :focused (fn [event app]
-                                (println "App: " event " " (.. app -title) " Focused window: " (.. app -focusedWindow -title))))
+  (js/Application.on :launched (fn [event-type app]
+                                 (println "App: " event-type " " (.. app -title))
+                                 (.on app :focused (fn [event-type window] (println ">>> " event-type " -- "(.. window -roleDescription))))))
 
   (println "ClojureScript initialized: " @env)
 

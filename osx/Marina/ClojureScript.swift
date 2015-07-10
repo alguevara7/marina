@@ -28,8 +28,6 @@ class ClojureScript {
         
         setUpClosureImportScript(context)
         
-        setUpNativeBridge(context)
-
         let basePath = NSBundle.mainBundle().pathForResource("out/goog/base", ofType: "js")!
         context.evaluateScript(
             String(contentsOfFile:basePath, encoding:NSUTF8StringEncoding, error:nil),
@@ -102,23 +100,6 @@ class ClojureScript {
             forKeyedSubscript: "CLOSURE_IMPORT_SCRIPT")
         
     }
-    
-
-    private func setUpNativeBridge(context: JSContext) {
-        context.evaluateScript("var marina = {}")
-        
-        let subscribe: @objc_block (JSValue, JSValue) -> Void = { (eventType: JSValue, fn: JSValue) -> Void in
-            println("SUBSCRIBE")
-            println(eventType.objectForKeyedSubscript("name"))
-            
-            fn.callWithArguments(["Hola muchachos :)"])
-        }
-        
-        context.objectForKeyedSubscript("marina").setObject(
-            unsafeBitCast(subscribe, AnyObject.self),
-            forKeyedSubscript: "subscribe")
-    }
-    
     
     //    + (NSString*)munge:(NSString*)s
     //    {
